@@ -5,38 +5,67 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Тестовый лендинг</title>
   <link rel="stylesheet" href="styles.css" />
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+      (function(m,e,t,r,i,k,a){
+          m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+          m[i].l=1*new Date();
+          for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=108596642', 'ym');
+
+      ym(108596642, 'init', {
+          ssr:true,
+          webvisor:true,
+          clickmap:true,
+          ecommerce:"dataLayer",
+          referrer: document.referrer,
+          url: location.href,
+          accurateTrackBounce:true,
+          trackLinks:true
+      });
+  </script>
+  <noscript>
+    <div>
+      <img src="https://mc.yandex.ru/watch/108596642" style="position:absolute; left:-9999px;" alt="" />
+    </div>
+  </noscript>
+  <!-- /Yandex.Metrika counter -->
 </head>
 <body>
   <section data-section="hero">
     <h2>Hero</h2>
-
+    <p>Простой тестовый лендинг для проверки событий аналитики.</p>
     <form id="contact-form">
-      <input type="text" name="name" placeholder="Имя" required />
-      <input type="tel" name="phone" placeholder="Телефон" required />
+      <input type="text" placeholder="Name" required />
+      <input type="text" placeholder="Phone" required />
       <button type="submit">Отправить</button>
     </form>
-
     <button class="cta-btn" data-section="hero">Обсудить проект</button>
   </section>
 
   <section data-section="about">
     <h2>About</h2>
+    <p>Короткий блок о проекте и его задачах.</p>
     <button class="cta-btn" data-section="about">Обсудить проект</button>
   </section>
 
   <section data-section="cases">
     <h2>Cases</h2>
+    <p>Здесь находится блок с примерами кейсов.</p>
     <button class="cta-btn" data-section="cases">Обсудить проект</button>
     <button id="cases-btn">Посмотреть все кейсы</button>
   </section>
 
   <section data-section="services">
     <h2>Services</h2>
+    <p>Список услуг в тестовом формате.</p>
     <button class="cta-btn" data-section="services">Обсудить проект</button>
   </section>
 
   <section data-section="footer">
     <h2>Footer</h2>
+    <p>Финальный блок с контактной информацией.</p>
     <button class="cta-btn" data-section="footer">Обсудить проект</button>
   </section>
 
@@ -44,21 +73,43 @@
     document.querySelectorAll('.cta-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const section = btn.dataset.section;
-        console.log('click_cta', section);
+
+        ym(108596642, 'reachGoal', 'click_cta', {
+          section: section
+        });
       });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const section = entry.target.dataset.section;
+
+          ym(108596642, 'reachGoal', 'section_view', {
+            section: section
+          });
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('[data-section]').forEach(section => {
+      observer.observe(section);
+    });
+
+    const form = document.getElementById('contact-form');
+
+    form.addEventListener('focusin', () => {
+      ym(108596642, 'reachGoal', 'form_start');
+    }, { once: true });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      ym(108596642, 'reachGoal', 'form_submit');
     });
 
     document.getElementById('cases-btn').addEventListener('click', () => {
-      console.log('click_cases_btn');
-    });
-
-    document.getElementById('contact-form').addEventListener('submit', event => {
-      event.preventDefault();
-      const formData = new FormData(event.target);
-      console.log('submit_form', {
-        name: formData.get('name'),
-        phone: formData.get('phone')
-      });
+      ym(108596642, 'reachGoal', 'click_telegram');
     });
   </script>
 </body>
