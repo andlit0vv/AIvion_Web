@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Тестовый лендинг</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <section data-section="hero">
+    <h2>Hero</h2>
+
+    <form id="contact-form">
+      <input type="text" name="name" placeholder="Имя" required />
+      <input type="tel" name="phone" placeholder="Телефон" required />
+      <button type="submit">Отправить</button>
+    </form>
+
+    <button class="cta-btn" data-section="hero">Обсудить проект</button>
+  </section>
+
+  <section data-section="about">
+    <h2>About</h2>
+    <button class="cta-btn" data-section="about">Обсудить проект</button>
+  </section>
+
+  <section data-section="cases">
+    <h2>Cases</h2>
+    <button class="cta-btn" data-section="cases">Обсудить проект</button>
+    <button id="cases-btn">Посмотреть все кейсы</button>
+  </section>
+
+  <section data-section="services">
+    <h2>Services</h2>
+    <button class="cta-btn" data-section="services">Обсудить проект</button>
+  </section>
+
+  <section data-section="footer">
+    <h2>Footer</h2>
+    <button class="cta-btn" data-section="footer">Обсудить проект</button>
+  </section>
+
+  <script>
+    document.querySelectorAll('.cta-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const section = btn.dataset.section;
+        console.log('click_cta', section);
+      });
+    });
+
+    document.getElementById('cases-btn').addEventListener('click', () => {
+      console.log('click_cases_btn');
+    });
+
+    document.getElementById('contact-form').addEventListener('submit', event => {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      console.log('submit_form', {
+        name: formData.get('name'),
+        phone: formData.get('phone')
+      });
+    });
+  </script>
+</body>
+</html>
