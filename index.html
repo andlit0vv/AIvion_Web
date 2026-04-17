@@ -80,14 +80,22 @@
       });
     });
 
+    const viewedSections = new Set();
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const section = entry.target.dataset.section;
+          if (!section || viewedSections.has(section)) {
+            return;
+          }
+
+          viewedSections.add(section);
 
           ym(108596642, 'reachGoal', 'section_view', {
             section: section
           });
+
+          observer.unobserve(entry.target);
         }
       });
     }, { threshold: 0.5 });
@@ -111,6 +119,54 @@
     document.getElementById('cases-btn').addEventListener('click', () => {
       ym(108596642, 'reachGoal', 'click_telegram');
     });
+
+    const depthMilestones = [25, 50, 75, 100];
+    const sentDepthMilestones = new Set();
+
+    const sendScrollDepth = () => {
+      const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollableHeight <= 0) {
+        return;
+      }
+
+      const currentDepth = Math.round((window.scrollY / scrollableHeight) * 100);
+
+      depthMilestones.forEach(depth => {
+        if (currentDepth >= depth && !sentDepthMilestones.has(depth)) {
+          sentDepthMilestones.add(depth);
+
+          ym(108596642, 'reachGoal', 'scroll_depth', {
+            depth: depth
+          });
+        }
+      });
+    };
+
+    window.addEventListener('scroll', sendScrollDepth, { passive: true });
+    sendScrollDepth();
+
+    const pageEnterTs = Date.now();
+    let timeOnPageSent = false;
+
+    const sendTimeOnPage = () => {
+      if (timeOnPageSent) {
+        return;
+      }
+      timeOnPageSent = true;
+
+      const secondsOnPage = Math.round((Date.now() - pageEnterTs) / 1000);
+      ym(108596642, 'reachGoal', 'time_on_page', {
+        seconds: secondsOnPage
+      });
+    };
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        sendTimeOnPage();
+      }
+    });
+
+    window.addEventListener('pagehide', sendTimeOnPage);
   </script>
 </body>
 </html>
